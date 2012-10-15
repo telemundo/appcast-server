@@ -12,19 +12,18 @@ function check_index($application = NULL) {
         if ($handle = opendir($directory)) {
             while (FALSE !== ($entry = readdir($handle))) {
                 if ($entry != "." && $entry != "..") {
-                    $fileinfo = new SplFileInfo($directory.'/'.$entry);
-                    if ($fileinfo->isDir()) {
-                        $basename = $fileinfo->getBasename();
-                        if (preg_match('@^[0-9]+\.[0-9]+\.[0-9]+$@i', $basename)) {
-                            $baseurl = $url.'/'.$basename;
-                            $basedir = $fileinfo->getRealPath();
-                            $metadata = json_decode(file_get_contents($basedir.'/metadata.json'), TRUE);
+                    $basename = realpath($directory.'/'.$entry);
+                    $fileinfo = new SplFileInfo($basename);
+                    if (is_dir($basename)) {
+                        if (preg_match('@^[0-9]+\.[0-9]+\.[0-9]+$@i', $entry)) {
+                            $baseurl = $url.'/'.$entry;
+                            $metadata = json_decode(file_get_contents($basename.'/metadata.json'), TRUE);
                             $item = array(
                                 'version' => $basename,
                                 'archive' => $baseurl.'/'.$metadata['archive'],
                                 'notes'   => $baseurl.'/'.$metadata['notes'],
                                 'date'    => (int)$metadata['date'],
-                                'size'    => filesize($basedir.'/'.$metadata['archive']),
+                                'size'    => filesize($basename.'/'.$metadata['archive']),
                                 'signature' => $metadata['signature']
                             );
                             $items[$basename] = $item;
