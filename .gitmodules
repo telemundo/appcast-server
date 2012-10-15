@@ -1,0 +1,3 @@
+[submodule "vendors/limonade"]
+	path = vendors/limonade
+	url = https://github.com/sofadesign/limonade
