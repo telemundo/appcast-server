@@ -9,23 +9,27 @@ function check_index($application = NULL) {
     $items = array();
     try {
         $directory = dirname(__FILE__).'/data/'.$application;
-        $iterator = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($directory), RecursiveIteratorIterator::CHILD_FIRST);
-        foreach($iterator as $pointer) {
-            if ($pointer->isDir()) {
-                $basename = $pointer->getBasename();
-                if (preg_match('@^[0-9]+\.[0-9]+\.[0-9]+$@i', $basename)) {
-                    $baseurl = $url.'/'.$basename;
-                    $basedir = $pointer->getRealPath();
-                    $metadata = json_decode(file_get_contents($basedir.'/metadata.json'), TRUE);
-                    $item = array(
-                        'version' => $basename,
-                        'archive' => $baseurl.'/'.$metadata['archive'],
-                        'notes'   => $baseurl.'/'.$metadata['notes'],
-                        'date'    => (int)$metadata['date'],
-                        'size'    => filesize($basedir.'/'.$metadata['archive']),
-                        'signature' => $metadata['signature']
-                    );
-                    $items[$basename] = $item;
+        if ($handle = opendir($directory)) {
+            while (FALSE !== ($entry = readdir($handle))) {
+                if ($entry != "." && $entry != "..") {
+                    $fileinfo = new SplFileInfo($directory.'/'.$entry);
+                    if ($fileinfo->isDir()) {
+                        $basename = $fileinfo->getBasename();
+                        if (preg_match('@^[0-9]+\.[0-9]+\.[0-9]+$@i', $basename)) {
+                            $baseurl = $url.'/'.$basename;
+                            $basedir = $fileinfo->getRealPath();
+                            $metadata = json_decode(file_get_contents($basedir.'/metadata.json'), TRUE);
+                            $item = array(
+                                'version' => $basename,
+                                'archive' => $baseurl.'/'.$metadata['archive'],
+                                'notes'   => $baseurl.'/'.$metadata['notes'],
+                                'date'    => (int)$metadata['date'],
+                                'size'    => filesize($basedir.'/'.$metadata['archive']),
+                                'signature' => $metadata['signature']
+                            );
+                            $items[$basename] = $item;
+                        }
+                    }
                 }
             }
         }
