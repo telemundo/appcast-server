@@ -26,7 +26,7 @@ function check_index($application = NULL) {
                                 'signature' => $metadata['signature'],
                                 'notes'     => $baseurl.'/release.txt'
                             );
-                            $items[$basename] = $item;
+                            $items[$entry] = $item;
                         }
                     }
                 }
