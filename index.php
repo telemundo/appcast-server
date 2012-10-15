@@ -1,4 +1,6 @@
 <?php
+ini_set('short_open_tag', 0);
+
 require_once 'vendors/limonade/lib/limonade.php';
 
 dispatch('/check/:application', 'check_index');
