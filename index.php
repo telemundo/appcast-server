@@ -19,12 +19,12 @@ function check_index($application = NULL) {
                             $baseurl = $url.'/'.$entry;
                             $metadata = json_decode(file_get_contents($basename.'/metadata.json'), TRUE);
                             $item = array(
-                                'version' => $entry,
-                                'archive' => $baseurl.'/'.$metadata['archive'],
-                                'notes'   => $baseurl.'/'.$metadata['notes'],
-                                'date'    => (int)$metadata['date'],
-                                'size'    => filesize($basename.'/'.$metadata['archive']),
-                                'signature' => $metadata['signature']
+                                'version'   => $metadata['version'],
+                                'archive'   => $baseurl.'/'.$metadata['archive'],
+                                'date'      => (int)$metadata['date'],
+                                'size'      => (int)$metadata['size'],
+                                'signature' => $metadata['signature'],
+                                'notes'     => $baseurl.'/release.txt'
                             );
                             $items[$basename] = $item;
                         }
