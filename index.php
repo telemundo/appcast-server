@@ -30,6 +30,7 @@ function check_index($application = NULL) {
         arsort($items);
     } catch(Exception $e) {}
 
+    set('application', $application);
     set('items', $items);
     set('canonical', $url);
     return html('check.xml.php', 'layout.xml.php');
