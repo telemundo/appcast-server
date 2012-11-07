@@ -9,6 +9,7 @@ function check_index($application = NULL) {
     try {
         $directory = dirname(__FILE__).'/data/'.$application;
         if ($handle = opendir($directory)) {
+            $items = array();
             while (FALSE !== ($entry = readdir($handle))) {
                 if ($entry != "." && $entry != "..") {
                     $basename = realpath($directory.'/'.$entry);
@@ -30,6 +31,7 @@ function check_index($application = NULL) {
                     }
                 }
             }
+            arsort($items);
 
             set('application', $application);
             set('items', $items);
@@ -49,28 +51,32 @@ function download_index($application = NULL) {
     try {
         $directory = dirname(__FILE__).'/data/'.$application;
         if ($handle = opendir($directory)) {
+            $items = array();
             while (FALSE !== ($entry = readdir($handle))) {
                 if ($entry != "." && $entry != "..") {
                     $basename = realpath($directory.'/'.$entry);
                     $fileinfo = new SplFileInfo($basename);
-                    if (is_dir($basename)) {
-                        if (preg_match('@^[0-9]+\.[0-9]+\.[0-9]+$@i', $entry)) {
-                            $baseurl  = $url.'/'.$entry;
-                            $metadata = json_decode(file_get_contents($basename.'/metadata.json'), TRUE);
-                            $filename  = $metadata['archive'];
-                            $archive = $basename.'/'.$filename;
-                            break;
+                    if (is_file($basename)) {
+                        if (preg_match('@[0-9]+\.[0-9]+\.[0-9]+@i', $entry)) {
+                            $items[$entry] = array(
+                                'filename' => $entry,
+                                'archive'  => $basename
+                            );
                         }
                     }
                 }
             }
+            arsort($items);
 
-            header('Content-disposition: attachment; filename='.$filename);
+            var_dump($items);
+
+            $archive = array_shift($items);
+            header('Content-disposition: attachment; filename='.$archive['filename']);
             header("Content-Type: application/octect-stream");
             header("Cache-Control: no-cache, private");
             header("Edge-control: no-store");
 
-            return render_file($archive);
+            return render_file($archive['archive']);
         } else {
             halt(NOT_FOUND, "The application you have requested doesn't exists.");
         }
