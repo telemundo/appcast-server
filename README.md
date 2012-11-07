@@ -1,11 +1,11 @@
-# AppCast Server
+# Appcast Server
 
 Generates an appcast RSS feed for multiple applications. The reason for the low PHP version requirement
 is the server environment where it is required to run.
 
 ## Requirements
 
-- [PHP 5 < 5.2](http://www.php.net/releases/5_1_4.php)
+- PHP 5 < 5.2
 - [limonade](https://github.com/sofadesign/limonade)
 
 ## Submitting bugs and feature requests
