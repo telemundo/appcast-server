@@ -68,8 +68,6 @@ function download_index($application = NULL) {
             }
             arsort($items);
 
-            var_dump($items);
-
             $archive = array_shift($items);
             header('Content-disposition: attachment; filename='.$archive['filename']);
             header("Content-Type: application/octect-stream");
